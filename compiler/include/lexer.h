@@ -27,5 +27,6 @@ typedef struct tokenlist_struct
     int index;
 } tokenlist_t;
 
-tokenlist_t lex(char* buffer);
+void init_lexer(char* buffer);
+tokenlist_t lex();
 char *tokentype_to_string(tokentype_t type);

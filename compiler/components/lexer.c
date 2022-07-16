@@ -3,17 +3,60 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-tokenlist_t lex(char* buffer)
+token_t *tokenss = NULL;
+int count = 0;
+int pos = 0;
+int line = 1;
+int column = 0;
+char *buffer = NULL;
+
+void init_lexer(char *buff)
+{
+    buffer = buff;
+    line = 1;
+    column = 0;
+    pos = 0;
+    count = 0;
+}
+
+void lex_num()
+{
+    int j = 0;
+    char *number = malloc(sizeof(char) * 20);
+    while (isdigit(buffer[pos]))
+    {
+        number[j] = buffer[pos];
+        j++;
+        pos++;
+    }
+    number[j] = '\0';
+    pos--;
+    tokenss = realloc(tokenss, sizeof(token_t) * (count + 1));
+    tokenss[count].type = TOKEN_INTEGER;
+    tokenss[count].value = number;
+    tokenss[count].line = line;
+    tokenss[count].column = column - 1;
+    count++;
+}
+
+void lex_onechar(tokentype_t type)
+{
+    tokenss = realloc(tokenss, sizeof(token_t) * (count + 1));
+    char *charp = malloc(sizeof(char) * 2);
+    charp[0] = buffer[pos]; charp[1] = '\0';
+    tokenss[count].type = type;
+    tokenss[count].value = charp;
+    tokenss[count].line = line;
+    tokenss[count].column = column;
+    count++;
+}
+
+tokenlist_t lex()
 {
     tokenlist_t tokenlist;
-    token_t* tokens = NULL;
-    int count = 0;
-    int i = 0;
-    int line = 1;
-    int column = 0;
-    for (i = 0; buffer[i] != '\0'; i++)
+    while (buffer[pos] != '\0')
     {
-        if (buffer[i] == '\n')
+        if (buffer[pos] == '\n')
         {
             line++;
             column = 0;
@@ -22,94 +65,53 @@ tokenlist_t lex(char* buffer)
         {
             column++;
         }
-        if (buffer[i] == '+')
+        if (buffer[pos] == '+')
         {
-            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-            tokens[count].type = TOKEN_PLUS;
-            tokens[count].value = "+";
-            tokens[count].line = line;
-            tokens[count].column = column - 1;
-            count++;
+            lex_onechar(TOKEN_PLUS);
         }
-        else if (buffer[i] == '-')
+        else if (buffer[pos] == '-')
         {
-            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-            tokens[count].type = TOKEN_MINUS;
-            tokens[count].value = "-";
-            tokens[count].line = line;
-            tokens[count].column = column - 1;
-            count++;
+            lex_onechar(TOKEN_MINUS);
         }
-        else if (buffer[i] == '*')
+        else if (buffer[pos] == '*')
         {
-            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-            tokens[count].type = TOKEN_MUL;
-            tokens[count].value = "*";
-            tokens[count].line = line;
-            tokens[count].column = column - 1;
-            count++;
+            lex_onechar(TOKEN_MUL);
         }
-        else if (buffer[i] == '/')
+        else if (buffer[pos] == '/')
         {
-            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-            tokens[count].type = TOKEN_DIV;
-            tokens[count].value = "/";
-            tokens[count].line = line;
-            tokens[count].column = column - 1;
-            count++;
+            lex_onechar(TOKEN_DIV);
         }
-        else if (buffer[i] == '(')
+        else if (buffer[pos] == '(')
         {
-            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-            tokens[count].type = TOKEN_LPAREN;
-            tokens[count].value = "(";
-            tokens[count].line = line;
-            tokens[count].column = column - 1;
-            count++;
+            lex_onechar(TOKEN_LPAREN);
         }
-        else if (buffer[i] == ')')
+        else if (buffer[pos] == ')')
         {
-            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-            tokens[count].type = TOKEN_RPAREN;
-            tokens[count].value = ")";
-            tokens[count].line = line;
-            tokens[count].column = column - 1;
-            count++;
+            lex_onechar(TOKEN_RPAREN);
         }
-        else if (isdigit(buffer[i]))
+        else if (isdigit(buffer[pos]))
         {
-            int j = 0;
-            char* number = malloc(sizeof(char) * 10);
-            for (j = 0; buffer[i] >= '0' && buffer[i] <= '9'; i++)
-            {
-                number[j] = buffer[i];
-                j++;
-            }
-            number[j] = '\0';
-            i--;
-            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-            tokens[count].type = TOKEN_INTEGER;
-            tokens[count].value = number;
-            tokens[count].line = line;
-            tokens[count].column = column - 1;
-            count++;
+            lex_num();
         }
-        else if (isspace(buffer[i]))
+        else if (isspace(buffer[pos]))
         {
+            pos++;
             continue;
         }
         else
         {
-            printf("Unknown character %c at line %d, column %d\n", buffer[i], line, column - 1);
+            printf("Unknown character %c at line %d, column %d\n", buffer[pos], line, column - 1);
+            exit(1);
         }
+        pos++;
     }
-    tokens = realloc(tokens, sizeof(token_t) * (count + 1));
-    tokens[count].type = TOKEN_EOF;
-    tokens[count].value = NULL;
-    tokens[count].line = line;
-    tokens[count].column = column - 1;
+    tokenss = realloc(tokenss, sizeof(token_t) * (count + 1));
+    tokenss[count].type = TOKEN_EOF;
+    tokenss[count].value = NULL;
+    tokenss[count].line = line;
+    tokenss[count].column = column - 1;
     count++;
-    tokenlist.tokens = tokens;
+    tokenlist.tokens = tokenss;
     tokenlist.count = count;
     return tokenlist;
 }

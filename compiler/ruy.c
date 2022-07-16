@@ -32,7 +32,8 @@ int main(int argc, char *argv[])
     }
     buffer[size] = '\0';
     fclose(file);
-    tokenlist_t tokenlist = lex(buffer);
+    init_lexer(buffer);
+    tokenlist_t tokenlist = lex();
     /*
     for (i = 0; i < tokenlist.count; i++)
     {
