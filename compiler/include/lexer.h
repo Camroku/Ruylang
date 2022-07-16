@@ -6,6 +6,10 @@ typedef enum tokentype_enum
     TOKEN_INTEGER,
     TOKEN_PLUS,
     TOKEN_MINUS,
+    TOKEN_MUL,
+    TOKEN_DIV,
+    TOKEN_LPAREN,
+    TOKEN_RPAREN,
 } tokentype_t;
 
 typedef struct token_struct

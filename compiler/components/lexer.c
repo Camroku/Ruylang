@@ -40,7 +40,43 @@ tokenlist_t lex(char* buffer)
             tokens[count].column = column - 1;
             count++;
         }
-        else if (buffer[i] >= '0' && buffer[i] <= '9')
+        else if (buffer[i] == '*')
+        {
+            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
+            tokens[count].type = TOKEN_MUL;
+            tokens[count].value = "*";
+            tokens[count].line = line;
+            tokens[count].column = column - 1;
+            count++;
+        }
+        else if (buffer[i] == '/')
+        {
+            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
+            tokens[count].type = TOKEN_DIV;
+            tokens[count].value = "/";
+            tokens[count].line = line;
+            tokens[count].column = column - 1;
+            count++;
+        }
+        else if (buffer[i] == '(')
+        {
+            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
+            tokens[count].type = TOKEN_LPAREN;
+            tokens[count].value = "(";
+            tokens[count].line = line;
+            tokens[count].column = column - 1;
+            count++;
+        }
+        else if (buffer[i] == ')')
+        {
+            tokens = realloc(tokens, sizeof(token_t) * (count + 1));
+            tokens[count].type = TOKEN_RPAREN;
+            tokens[count].value = ")";
+            tokens[count].line = line;
+            tokens[count].column = column - 1;
+            count++;
+        }
+        else if (isdigit(buffer[i]))
         {
             int j = 0;
             char* number = malloc(sizeof(char) * 10);
@@ -90,6 +126,15 @@ char *tokentype_to_string(tokentype_t type)
         return "PLUS";
     case TOKEN_MINUS:
         return "MINUS";
+    case TOKEN_MUL:
+        return "MUL";
+    case TOKEN_DIV:
+        return "DIV";
+    case TOKEN_LPAREN:
+        return "LPAREN";
+    case TOKEN_RPAREN:
+        return "RPAREN";
+    default:
+        return "UNKNOWN";
     }
-    return "UNKNOWN";
 }

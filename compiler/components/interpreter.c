@@ -22,6 +22,12 @@ int visit_node(ast_node_t *node)
         case '-':
             return left - right;
             break;
+        case '*':
+            return left * right;
+            break;
+        case '/':
+            return left / right;
+            break;
         }
         break;
     }

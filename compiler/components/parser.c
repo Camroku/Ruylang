@@ -5,6 +5,11 @@
 
 tokenlist_t tokens;
 
+void eat(tokentype_t type);
+ast_node_t *factor();
+ast_node_t *term();
+ast_node_t *expr();
+
 void eat(tokentype_t type)
 {
     if (tokens.tokens[tokens.index].type == type)
@@ -18,12 +23,43 @@ void eat(tokentype_t type)
     }
 }
 
+ast_node_t *factor()
+{
+    if (tokens.tokens[tokens.index].type == TOKEN_INTEGER)
+    {
+        ast_node_t *node = malloc(sizeof(ast_node_t));
+        node->type = AST_NODE_INTEGER;
+        node->integer.value = atoi(tokens.tokens[tokens.index].value);
+        eat(TOKEN_INTEGER);
+        return node;
+    }
+    else if (tokens.tokens[tokens.index].type == TOKEN_LPAREN)
+    {
+        eat(TOKEN_LPAREN);
+        ast_node_t *node = expr();
+        eat(TOKEN_RPAREN);
+        return node;
+    }
+    else
+    {
+        printf("Error: Expected integer or left paren\n");
+        exit(1);
+    }
+}
+
 ast_node_t *term()
 {
-    ast_node_t *node = malloc(sizeof(ast_node_t));
-    node->type = AST_NODE_INTEGER;
-    node->integer.value = atoi(tokens.tokens[tokens.index].value);
-    eat(TOKEN_INTEGER);
+    ast_node_t *node = factor();
+    while (tokens.tokens[tokens.index].type == TOKEN_MUL || tokens.tokens[tokens.index].type == TOKEN_DIV)
+    {
+        ast_node_t *tmp = malloc(sizeof(ast_node_t));
+        tmp->type = AST_NODE_BINOP;
+        tmp->binop.op = tokens.tokens[tokens.index].value[0];
+        tmp->binop.left = node;
+        eat(tokens.tokens[tokens.index].type);
+        tmp->binop.right = factor();
+        node = tmp;
+    }
     return node;
 }
 
