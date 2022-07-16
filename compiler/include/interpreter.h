@@ -1,4 +1,4 @@
 #pragma once
-#include <lexer.h>
+#include <parser.h>
 
-void interpret(tokenlist_t tokenlist);
+void interpret(ast_node_t *node);

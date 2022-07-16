@@ -2,55 +2,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <lexer.h>
+#include <parser.h>
 
-tokenlist_t tokens;
-
-int term()
+int visit_node(ast_node_t *node)
 {
-    int result = 0;
-    if (tokens.index < tokens.count)
+    switch (node->type)
     {
-        if (tokens.tokens[tokens.index].type == TOKEN_INTEGER)
+    case AST_NODE_INTEGER:
+        return node->integer.value;
+        break;
+    case AST_NODE_BINOP:
+        int left = visit_node(node->binop.left);
+        int right = visit_node(node->binop.right);
+        switch (node->binop.op)
         {
-            result = atoi(tokens.tokens[tokens.index].value);
-            tokens.index++;
+        case '+':
+            return left + right;
+            break;
+        case '-':
+            return left - right;
+            break;
         }
-        else
-        {
-            printf("Error: expected integer, got %s\n", tokentype_to_string(tokens.tokens[tokens.index].type));
-            exit(1);
-        }
+        break;
     }
-    return result;
+    return 0;
 }
 
-int expr()
+void interpret(ast_node_t *node)
 {
-    int result = term();
-    while (tokens.tokens[tokens.index].type == TOKEN_PLUS || tokens.tokens[tokens.index].type == TOKEN_MINUS)
-    {
-        if (tokens.tokens[tokens.index].type == TOKEN_PLUS)
-        {
-            tokens.index++;
-            result += term();
-        }
-        else if (tokens.tokens[tokens.index].type == TOKEN_MINUS)
-        {
-            tokens.index++;
-            result -= term();
-        }
-        else
-        {
-            printf("Error: Expected + or -\n");
-            return 0;
-        }
-    }
-    return result;
+    printf("%d\n", visit_node(node));
 }
 
-void interpret(tokenlist_t tokenlist)
-{
-    tokens = tokenlist;
-    tokens.index = 0;
-    printf("%d\n", expr());
-}

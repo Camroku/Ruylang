@@ -2,6 +2,7 @@
 #include <lexer.h>
 #include <interpreter.h>
 #include <stdlib.h>
+#include <parser.h>
 
 int main(int argc, char *argv[])
 {
@@ -32,11 +33,14 @@ int main(int argc, char *argv[])
     buffer[size] = '\0';
     fclose(file);
     tokenlist_t tokenlist = lex(buffer);
+    /*
     for (i = 0; i < tokenlist.count; i++)
     {
         printf("%s\t%s\t%d:%d\n", tokentype_to_string(tokenlist.tokens[i].type), tokenlist.tokens[i].value, tokenlist.tokens[i].line, tokenlist.tokens[i].column);
     }
-    printf("\n");
-    interpret(tokenlist);
+    printf("%s\n\n", ast_node_to_string(parse(tokenlist), 0));
+    */
+    ast_node_t *node = parse(tokenlist);
+    interpret(node);
     return 0;
 }

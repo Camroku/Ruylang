@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O2 -Wall -Wextra -fno-exceptions -I./include --std=c99
+CFLAGS=-O2 -Wall -Wextra -fno-exceptions -I./include --std=c99 -g
 SOURCES=ruy.c components/*.c
 
 build:

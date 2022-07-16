@@ -28,7 +28,7 @@ tokenlist_t lex(char* buffer)
             tokens[count].type = TOKEN_PLUS;
             tokens[count].value = "+";
             tokens[count].line = line;
-            tokens[count].column = column;
+            tokens[count].column = column - 1;
             count++;
         }
         else if (buffer[i] == '-')
@@ -37,7 +37,7 @@ tokenlist_t lex(char* buffer)
             tokens[count].type = TOKEN_MINUS;
             tokens[count].value = "-";
             tokens[count].line = line;
-            tokens[count].column = column;
+            tokens[count].column = column - 1;
             count++;
         }
         else if (buffer[i] >= '0' && buffer[i] <= '9')
@@ -55,7 +55,7 @@ tokenlist_t lex(char* buffer)
             tokens[count].type = TOKEN_INTEGER;
             tokens[count].value = number;
             tokens[count].line = line;
-            tokens[count].column = column;
+            tokens[count].column = column - 1;
             count++;
         }
         else if (isspace(buffer[i]))
@@ -64,14 +64,14 @@ tokenlist_t lex(char* buffer)
         }
         else
         {
-            printf("Unknown character %c at line %d, column %d\n", buffer[i], line, column);
+            printf("Unknown character %c at line %d, column %d\n", buffer[i], line, column - 1);
         }
     }
     tokens = realloc(tokens, sizeof(token_t) * (count + 1));
     tokens[count].type = TOKEN_EOF;
     tokens[count].value = NULL;
     tokens[count].line = line;
-    tokens[count].column = column;
+    tokens[count].column = column - 1;
     count++;
     tokenlist.tokens = tokens;
     tokenlist.count = count;
