@@ -5,6 +5,7 @@ typedef enum ast_node_type
 {
     AST_NODE_INTEGER,
     AST_NODE_BINOP,
+    AST_NODE_UNARYOP,
 } ast_node_type_t;
 
 typedef struct integer_ast
@@ -19,6 +20,12 @@ typedef struct binop_ast
     char op;
 } binop_ast_t;
 
+typedef struct unaryop_ast
+{
+    struct ast_node_t* right;
+    char op;
+} unaryop_ast_t;
+
 typedef struct ast_node_t
 {
     ast_node_type_t type;
@@ -26,6 +33,7 @@ typedef struct ast_node_t
     {
         integer_ast_t integer;
         binop_ast_t binop;
+        unaryop_ast_t unaryop;
     };
 } ast_node_t;
 

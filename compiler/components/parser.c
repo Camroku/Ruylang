@@ -40,6 +40,24 @@ ast_node_t *factor()
         eat(TOKEN_RPAREN);
         return node;
     }
+    else if (tokens.tokens[tokens.index].type == TOKEN_PLUS)
+    {
+        eat(TOKEN_PLUS);
+        ast_node_t *node = malloc(sizeof(ast_node_t));
+        node->type = AST_NODE_UNARYOP;
+        node->unaryop.op = '+';
+        node->unaryop.right = factor();
+        return node;
+    }
+    else if (tokens.tokens[tokens.index].type == TOKEN_MINUS)
+    {
+        eat(TOKEN_MINUS);
+        ast_node_t *node = malloc(sizeof(ast_node_t));
+        node->type = AST_NODE_UNARYOP;
+        node->unaryop.op = '-';
+        node->unaryop.right = factor();
+        return node;
+    }
     else
     {
         printf("Error: Expected integer or left paren\n");
@@ -116,6 +134,9 @@ char *ast_node_to_string(ast_node_t *type, int depth)
         break;
     case AST_NODE_BINOP:
         sprintf(out, "%sBinOp(\n%s, %c,\n%s\n%s)", indent, ast_node_to_string(type->binop.left, depth + 1), type->binop.op, ast_node_to_string(type->binop.right, depth + 1), indent);
+        break;
+    case AST_NODE_UNARYOP:
+        sprintf(out, "%sUnaryOp( %c,\n%s\n%s)", indent, type->unaryop.op, ast_node_to_string(type->unaryop.right, depth + 1), indent);
         break;
     }
     return out;
