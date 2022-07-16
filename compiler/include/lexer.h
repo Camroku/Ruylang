@@ -20,6 +20,7 @@ typedef struct tokenlist_struct
 {
     token_t* tokens;
     int count;
+    int index;
 } tokenlist_t;
 
 tokenlist_t lex(char* buffer);
