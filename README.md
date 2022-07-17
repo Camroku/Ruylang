@@ -1,7 +1,7 @@
 # RuyLang
-Ah, yes. I made another language.
+Ah, yes. We made another language.
 
-Trying to implement [Let's Build a Simple Interpreter](https://ruslanspivak.com/lsbasi-part1/) in C, probably won't be successful. If I actually make it work, it may replace QoLang.
+We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspivak.com/lsbasi-part1/) in C, probably won't be successful. If we actually make it work, it may replace QoLang.
 
 To do:
 - [x] Implement statement list, compound statement, and assignment.
@@ -32,4 +32,4 @@ To do:
 - [ ] Implement a file library.
 - [ ] Implement a date-time library.
 
-*Yes, I know this is literally the QoLang's commit history.*
+*Yes, we know this is literally the QoLang's commit history.*
