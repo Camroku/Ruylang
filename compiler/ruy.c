@@ -39,8 +39,9 @@ int main(int argc, char *argv[])
     {
         printf("%s\t%s\t%d:%d\n", tokentype_to_string(tokenlist.tokens[i].type), tokenlist.tokens[i].value, tokenlist.tokens[i].line, tokenlist.tokens[i].column);
     }
-    printf("%s\n\n", ast_node_to_string(parse(tokenlist), 0));
-    /**/
+    printf("%s\n", ast_node_to_string(parse(tokenlist), 0));
+    */
+    
     ast_node_t *node = parse(tokenlist);
     interpret(node);
     return 0;

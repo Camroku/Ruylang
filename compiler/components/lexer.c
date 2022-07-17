@@ -43,11 +43,32 @@ void lex_onechar(tokentype_t type)
 {
     tokenss = realloc(tokenss, sizeof(token_t) * (count + 1));
     char *charp = malloc(sizeof(char) * 2);
-    charp[0] = buffer[pos]; charp[1] = '\0';
+    charp[0] = buffer[pos];
+    charp[1] = '\0';
     tokenss[count].type = type;
     tokenss[count].value = charp;
     tokenss[count].line = line;
     tokenss[count].column = column;
+    count++;
+}
+
+void lex_id()
+{
+    int j = 0;
+    char *identf = malloc(sizeof(char) * 20);
+    while (isalnum(buffer[pos]) || buffer[pos] == '_' || buffer[pos] == '.')
+    {
+        identf[j] = buffer[pos];
+        j++;
+        pos++;
+    }
+    identf[j] = '\0';
+    pos--;
+    tokenss = realloc(tokenss, sizeof(token_t) * (count + 1));
+    tokenss[count].type = TOKEN_ID;
+    tokenss[count].value = identf;
+    tokenss[count].line = line;
+    tokenss[count].column = column - 1;
     count++;
 }
 
@@ -93,6 +114,26 @@ tokenlist_t lex()
         {
             lex_num();
         }
+        else if (buffer[pos] == '=')
+        {
+            lex_onechar(TOKEN_ASSIGN);
+        }
+        else if (buffer[pos] == ';')
+        {
+            lex_onechar(TOKEN_SEMI);
+        }
+        else if (buffer[pos] == '{')
+        {
+            lex_onechar(TOKEN_LCBRCKT);
+        }
+        else if (buffer[pos] == '}')
+        {
+            lex_onechar(TOKEN_RCBRCKT);
+        }
+        else if (isalpha(buffer[pos]) || buffer[pos] == '_')
+        {
+            lex_id();
+        }
         else if (isspace(buffer[pos]))
         {
             pos++;
@@ -136,6 +177,16 @@ char *tokentype_to_string(tokentype_t type)
         return "LPAREN";
     case TOKEN_RPAREN:
         return "RPAREN";
+    case TOKEN_ASSIGN:
+        return "ASSIGN";
+    case TOKEN_SEMI:
+        return "SEMI";
+    case TOKEN_LCBRCKT:
+        return "LCBRCKT";
+    case TOKEN_RCBRCKT:
+        return "RCBRCKT";
+    case TOKEN_ID:
+        return "ID";
     default:
         return "UNKNOWN";
     }

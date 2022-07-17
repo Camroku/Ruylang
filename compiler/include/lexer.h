@@ -10,6 +10,11 @@ typedef enum tokentype_enum
     TOKEN_DIV,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
+    TOKEN_ASSIGN,
+    TOKEN_SEMI,
+    TOKEN_LCBRCKT,
+    TOKEN_RCBRCKT,
+    TOKEN_ID,
 } tokentype_t;
 
 typedef struct token_struct
