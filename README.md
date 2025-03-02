@@ -1,7 +1,7 @@
 # RuyLang
 Ah, yes. We made another language.
 
-We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspivak.com/lsbasi-part1/) in C, probably won't be successful. If we actually make it work, it may replace QoLang.
+We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspivak.com/lsbasi-part1/) in C. It might replace QoLang in the future.
 
 To do:
 - [x] Implement statement list, compound statement, and assignment.
