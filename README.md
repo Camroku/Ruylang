@@ -7,7 +7,7 @@ We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspiva
 ### Basic structure
 1. [x] Implement statement list, compound statement, and assignment  
 2. [x] Implement comments  
-3. [ ] Implement functions  
+3. [x] Implement functions  
 4. [ ] Implement return statement  
 5. [ ] Implement define statement
 6. [ ] Implement `__main__` variable  
