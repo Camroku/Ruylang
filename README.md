@@ -1,35 +1,39 @@
 # RuyLang
-Ah, yes. We made another language.
+This is another programming language project made by Camroku.
 
 We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspivak.com/lsbasi-part1/) in C. It might replace QoLang in the future.
 
-To do:
-- [x] Implement statement list, compound statement, and assignment.
-- [ ] Implement functions.
-- [ ] Implement arguments for functions.
-- [ ] Implement strings.
-- [ ] Implement a small standard library.
-- [ ] Implement boolean expressions and pointers.
-- [ ] Implement comments.
-- [ ] Implement if-else statements.
-- [ ] Implement type function.
-- [ ] Implement foreach, for, while, times loops.
-- [ ] Implement exit function.
-- [ ] Implement `&&` and `||` operators.
-- [ ] Implement `!` operator.
-- [ ] Implement formatted strings.
-- [ ] Implement return statement.
-- [ ] Implement lists.
-- [ ] Implement NoneType.
-- [ ] Implement add, sub, multiply and divide statements.
-- [ ] Implement including and exporting system.
-- [ ] Implement define statement.
-- [ ] Implement `__main__` variable.
-- [ ] Implement slicing and steps for lists.
-- [ ] Implement local variables.
-- [ ] Implement `in` operator.
-- [ ] Implement floats.
-- [ ] Implement a file library.
-- [ ] Implement a date-time library.
+## To do
+### Basic structure
+1. [x] Implement statement list, compound statement, and assignment  
+2. [ ] Implement comments  
+3. [ ] Implement functions  
+4. [ ] Implement return statement  
+5. [ ] Implement define statement
+6. [ ] Implement `__main__` variable  
 
-*Yes, we know this is literally the QoLang's commit history.*
+### Data types and operators
+7. [ ] Implement strings  
+8. [ ] Implement lists  
+9. [ ] Implement slicing and steps for lists  
+10. [ ] Implement NoneType  
+11. [ ] Implement floats  
+12. [ ] Implement boolean expressions and pointers  
+13. [ ] Implement `&&` and `||` operators  
+14. [ ] Implement `!` operator  
+15. [ ] Implement `in` operator  
+
+### Control flow
+16. [ ] Implement if-else statements  
+17. [ ] Implement foreach, for, while, times loops  
+18. [ ] Implement exit function  
+
+### Extra functionality
+19. [ ] Implement formatted strings  
+20. [ ] Implement local variables  
+21. [ ] Implement type function  
+22. [ ] Implement add, sub, multiply and divide statements  
+23. [ ] Implement including and exporting system  
+24. [ ] Implement a small standard library  
+25. [ ] Implement a file library  
+26. [ ] Implement a date-time library  
