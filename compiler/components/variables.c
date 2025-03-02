@@ -4,41 +4,50 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-vars_t *variabless;
-
 void init_vars(vars_t *varsptr)
 {
-    variabless = varsptr;
-    variabless->count = 0;
+    varsptr->count = 0;
+    varsptr->parent_scope = NULL;
+    varsptr->vars = NULL;
 }
 
-varval_t *get_var(char *name)
+vars_t *create_scope(vars_t *varsptr)
 {
-    for (int i = 0; i < variabless->count; i++)
-    {
-        if (strcmp(variabless->vars[i]->var, name) == 0)
-        {
-            return variabless->vars[i];
-        }
-    }
-    return 0;
+    vars_t *new_scope = malloc(sizeof(vars_t));
+    new_scope->count = 0;
+    new_scope->parent_scope = varsptr;
+    new_scope->vars = NULL;
+    return new_scope;
 }
 
-void set_var(varval_t *variable)
+varval_t *get_var(vars_t *cr_scope, char *name)
 {
-    bool found = false;
-    for (int i = 0; i < variabless->count; i++)
+    for (int i = 0; i < cr_scope->count; i++)
     {
-        if (strcmp(variabless->vars[i]->var, variable->var) == 1)
+        if (strcmp(cr_scope->vars[i]->var, name) == 0)
         {
-            variabless->vars[i] = variable;
-            found = true;
+            return cr_scope->vars[i];
         }
     }
-    if (!found)
+    if (cr_scope->parent_scope != NULL)
     {
-        variabless->vars = realloc(variabless->vars, sizeof(varval_t) * (variabless->count + 1));
-        variabless->vars[variabless->count] = variable;
-        variabless->count++;
+        return get_var(cr_scope->parent_scope, name);
+    }
+
+    return NULL;
+}
+
+void set_var(vars_t *cr_scope, varval_t *variable)
+{
+    varval_t *var = get_var(cr_scope, variable->var);
+    if (var != NULL)
+    {
+        *var = *variable;
+    }
+    else
+    {
+        cr_scope->vars = realloc(cr_scope->vars, sizeof(varval_t) * (cr_scope->count + 1));
+        cr_scope->vars[cr_scope->count] = variable;
+        cr_scope->count++;
     }
 }

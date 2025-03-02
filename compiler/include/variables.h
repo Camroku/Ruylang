@@ -21,8 +21,10 @@ typedef struct vars
 {
     varval_t **vars;
     int count;
+    struct vars *parent_scope;
 } vars_t;
 
 void init_vars(vars_t *varsptr);
-varval_t *get_var(char *name);
-void set_var(varval_t *name);
+vars_t *create_scope(vars_t *varsptr);
+varval_t *get_var(vars_t *cr_scope, char *name);
+void set_var(vars_t *cr_scope, varval_t *name);

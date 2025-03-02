@@ -1,19 +1,18 @@
 #include <interpreter.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <lexer.h>
 #include <parser.h>
 #include <variables.h>
 
-vars_t *variables;
+int visit_node(vars_t *variables, ast_node_t *node);
 
-int visit_node(ast_node_t *node);
-
-int int_binop(ast_node_t *node)
+int int_binop(vars_t *variables, ast_node_t *node)
 {
     int left = 0, right = 0;
-    left = visit_node(node->binop.left);
-    right = visit_node(node->binop.right);
+    left = visit_node(variables, node->binop.left);
+    right = visit_node(variables, node->binop.right);
     switch (node->binop.op)
     {
     case '+':
@@ -34,24 +33,36 @@ int int_binop(ast_node_t *node)
     }
 }
 
-void int_compound(ast_node_t *node)
+void int_compound(vars_t *variables, ast_node_t *node, bool create_new_scope)
 {
-    for (int i = 0; i < node->compound.count; i++)
+    if (create_new_scope)
     {
-        visit_node(node->compound.children[i]);
+        vars_t *new_scope = create_scope(variables);
+        for (int i = 0; i < node->compound.count; i++)
+        {
+            visit_node(new_scope, node->compound.children[i]);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < node->compound.count; i++)
+        {
+            visit_node(variables, node->compound.children[i]);
+        }
     }
 }
 
-void int_assign(ast_node_t *node)
+void int_assign(vars_t *variables, ast_node_t *node)
 {
     varval_t *variable = malloc(sizeof(varval_t));
     variable->type = INTEGER;
     variable->var = node->assign.name;
-    variable->integer.value = visit_node(node->assign.value);
-    set_var(variable);
+    variable->integer.value = visit_node(variables, node->assign.value);
+    set_var(variables, variable);
+    printf("just set %s = %d\n", variable->var, variable->integer.value);
 }
 
-int visit_node(ast_node_t *node)
+int visit_node(vars_t *variables, ast_node_t *node)
 {
     int right = 0;
     switch (node->type)
@@ -60,10 +71,10 @@ int visit_node(ast_node_t *node)
         return node->integer.value;
         break;
     case AST_NODE_BINOP:
-        return int_binop(node);
+        return int_binop(variables, node);
         break;
     case AST_NODE_UNARYOP:
-        right = visit_node(node->unaryop.right);
+        right = visit_node(variables, node->unaryop.right);
         switch (node->unaryop.op)
         {
         case '+':
@@ -75,15 +86,15 @@ int visit_node(ast_node_t *node)
         }
         break;
     case AST_NODE_COMPOUND:
-        int_compound(node);
+        int_compound(variables, node, true);
         return 0;
         break;
     case AST_NODE_ASSIGN:
-        int_assign(node);
+        int_assign(variables, node);
         return 0;
         break;
     case AST_NODE_VAR:
-        varval_t *variable = get_var(node->var.name);
+        varval_t *variable = get_var(variables, node->var.name);
         if (variable == 0)
         {
             printf("Variable '%s' not found.\n", node->var.name);
@@ -108,9 +119,10 @@ int visit_node(ast_node_t *node)
 
 void interpret(ast_node_t *node)
 {
-    variables = malloc(sizeof(vars_t));
+    vars_t *variables = malloc(sizeof(vars_t));
     init_vars(variables);
-    visit_node(node);
+    int_compound(variables, node, false);
+    printf("cnt %d\n", variables->count);
     for (int i = 0; i < variables->count; i++)
     {
         switch (variables->vars[i]->type)
