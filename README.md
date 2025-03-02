@@ -1,5 +1,5 @@
 # RuyLang
-This is another programming language project made by Camroku.
+A programming language project by Camroku.
 
 We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspivak.com/lsbasi-part1/) in C. It might replace QoLang in the future.
 
