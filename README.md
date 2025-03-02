@@ -6,7 +6,7 @@ We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspiva
 ## To do
 ### Basic structure
 1. [x] Implement statement list, compound statement, and assignment  
-2. [ ] Implement comments  
+2. [x] Implement comments  
 3. [ ] Implement functions  
 4. [ ] Implement return statement  
 5. [ ] Implement define statement

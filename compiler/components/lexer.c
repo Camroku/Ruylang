@@ -86,7 +86,26 @@ tokenlist_t lex()
         {
             column++;
         }
-        if (buffer[pos] == '+')
+        if (buffer[pos] == '#' && buffer[pos+1] == '#')
+        {
+            pos += 2;
+            while (!(buffer[pos] == '#' && buffer[pos+1] == '#'))
+            {
+                pos++;
+            }
+            pos += 2;
+            continue;
+        }
+        else if (buffer[pos] == '#')
+        {
+            while (buffer[pos] != '\n')
+            {
+                pos++;
+            }
+            pos++;
+            continue;
+        }
+        else if (buffer[pos] == '+')
         {
             lex_onechar(TOKEN_PLUS);
         }

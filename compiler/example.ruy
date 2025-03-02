@@ -1,6 +1,8 @@
-var = 1 + 3;
-var2 = var * 2;
+var = 1 + 3; # supposed to be 4
+var2 = var * 2; # supposed to be 8
 {
-    var3 = var2 + 1;
+    var3 = var2 + 1; # supposed to be 9 but won't be visible in the main scope
 }
-var4 = 23;
+var4 = 23; # 23 orz
+## we got
+block statements too! ##
