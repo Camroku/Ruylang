@@ -30,7 +30,7 @@ We're trying to implement [Let's Build a Simple Interpreter](https://ruslanspiva
 
 ### Extra functionality
 19. [ ] Implement formatted strings  
-20. [ ] Implement local variables  
+20. [x] Implement local variables  
 21. [ ] Implement type function  
 22. [ ] Implement add, sub, multiply and divide statements  
 23. [ ] Implement including and exporting system  
