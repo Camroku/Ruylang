@@ -34,14 +34,12 @@ int main(int argc, char *argv[])
     fclose(file);
     init_lexer(buffer);
     tokenlist_t tokenlist = lex();
-    /*
-    for (i = 0; i < tokenlist.count; i++)
-    {
-        printf("%s\t%s\t%d:%d\n", tokentype_to_string(tokenlist.tokens[i].type), tokenlist.tokens[i].value, tokenlist.tokens[i].line, tokenlist.tokens[i].column);
-    }
-    printf("%s\n", ast_node_to_string(parse(tokenlist), 0));
-    */
-    
+    // for (i = 0; i < tokenlist.count; i++)
+    // {
+    //     printf("%s\t%s\t%d:%d\n", tokentype_to_string(tokenlist.tokens[i].type), tokenlist.tokens[i].value, tokenlist.tokens[i].line, tokenlist.tokens[i].column);
+    // }
+    // printf("%s\n-- running the script now --\n", ast_node_to_string(parse(tokenlist), 0));
+    // return 0;
     ast_node_t *node = parse(tokenlist);
     interpret(node);
     return 0;

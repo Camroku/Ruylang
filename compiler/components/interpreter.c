@@ -5,6 +5,7 @@
 #include <lexer.h>
 #include <parser.h>
 #include <variables.h>
+#include <enum.h>
 
 int visit_node(vars_t *variables, ast_node_t *node);
 
@@ -55,11 +56,50 @@ void int_compound(vars_t *variables, ast_node_t *node, bool create_new_scope)
 void int_assign(vars_t *variables, ast_node_t *node)
 {
     varval_t *variable = malloc(sizeof(varval_t));
-    variable->type = INTEGER;
+    variable->type = VAR_INTEGER;
     variable->var = node->assign.name;
     variable->integer.value = visit_node(variables, node->assign.value);
+    varval_t *existingvar = get_var(variables, node->assign.name);
+    if (existingvar == NULL)
+    {
+        printf("Undefined reference to '%s'.\n", node->assign.name);
+        exit(1);
+    }
+    printf("just set %s = %d\n", variable->var, variable->integer.value);
+}
+
+void int_declare(vars_t *variables, ast_node_t *node)
+{
+    varval_t *existingvar = get_var(variables, node->assign.name);
+    if (existingvar != NULL)
+    {
+        printf("'%s' already exists.\n", node->assign.name);
+        exit(1);
+    }
+    varval_t *variable = malloc(sizeof(varval_t));
+    variable->type = VAR_INTEGER;
+    variable->var = node->declare.name;
+    variable->integer.value = visit_node(variables, node->declare.value);
     set_var(variables, variable);
     printf("just set %s = %d\n", variable->var, variable->integer.value);
+}
+
+void int_func(vars_t *variables, ast_node_t *node)
+{
+    varval_t *existingvar = get_var(variables, node->assign.name);
+    if (existingvar != NULL)
+    {
+        printf("'%s' already exists.\n", node->assign.name);
+        exit(1);
+    }
+    varval_t *variable = malloc(sizeof(varval_t));
+    variable->type = VAR_FUNCTION;
+    variable->var = node->func.name;
+    variable->function.type = node->func.type;
+    variable->function.arguments = node->func.arguments;
+    variable->function.compound = node->func.compound;
+    set_var(variables, variable);
+    printf("created function '%s'\n", variable->var);
 }
 
 int visit_node(vars_t *variables, ast_node_t *node)
@@ -93,19 +133,42 @@ int visit_node(vars_t *variables, ast_node_t *node)
         int_assign(variables, node);
         return 0;
         break;
+    case AST_NODE_DECLARE:
+        int_declare(variables, node);
+        return 0;
+        break;
+    case AST_NODE_FUNCTION_DECLARE:
+        int_func(variables, node);
+        return 0;
+        break;
+    case AST_NODE_RETURN:
+        // int_return(variables, node);
+        return 0;
+        break;
+    case AST_NODE_FUNCCALL:
+        // int_funccall(variables, node);
+        return 0;
+        break;
     case AST_NODE_VAR:
         varval_t *variable = get_var(variables, node->var.name);
         if (variable == 0)
         {
-            printf("Variable '%s' not found.\n", node->var.name);
+            printf("Undefined reference to '%s'.\n", node->var.name);
             exit(1);
         }
         else
         {
             switch (variable->type)
             {
-            case INTEGER:
+            case VAR_INTEGER:
                 return variable->integer.value;
+                break;
+            case VAR_FUNCTION:
+                printf("Invalid - %s is a function", variable->var);
+                exit(1);
+                break;
+            case VAR_UNKNOWN:
+                return 0;
                 break;
             }
         }
@@ -127,8 +190,18 @@ void interpret(ast_node_t *node)
     {
         switch (variables->vars[i]->type)
         {
-        case INTEGER:
+        case VAR_INTEGER:
             printf("%s = %d\n", variables->vars[i]->var, variables->vars[i]->integer.value);
+            break;
+        case VAR_FUNCTION:
+            printf("%s (func)\n  arguments:\n", variables->vars[i]->var);
+            for (int j = 0; j < variables->vars[i]->function.arguments->count; j++)
+            {
+                printf("    %s %s\n", type_enum_to_str(variables->vars[i]->function.arguments->args[j]->type), variables->vars[i]->function.arguments->args[j]->var);
+            }
+            break;
+        case VAR_UNKNOWN:
+            printf("unknown variable %s\n", variables->vars[i]->var);
             break;
         }
     }

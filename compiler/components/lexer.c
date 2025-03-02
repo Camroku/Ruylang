@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
+#include <enum.h>
 
 token_t *tokenss = NULL;
 int count = 0;
@@ -52,8 +54,22 @@ void lex_onechar(tokentype_t type)
     count++;
 }
 
+keyword_id_t* linear_keyword_search(keyword_id_t* keywords, size_t size, const char* key) {
+    for (size_t i=0; i<size; i++) {
+        if (strcmp(keywords[i].key, key) == 0) {
+            return &keywords[i];
+        }
+    }
+    return NULL;
+}
 void lex_id()
 {
+    keyword_id_t keywords[] = {
+        {"func", TOKEN_FUNC},
+        {"return", TOKEN_RETURN},
+        {"int", TOKEN_TYPE},
+    };
+    size_t num_keywords = sizeof(keywords) / sizeof(keyword_id_t);
     int j = 0;
     char *identf = malloc(sizeof(char) * 20);
     while (isalnum(buffer[pos]) || buffer[pos] == '_' || buffer[pos] == '.')
@@ -65,7 +81,15 @@ void lex_id()
     identf[j] = '\0';
     pos--;
     tokenss = realloc(tokenss, sizeof(token_t) * (count + 1));
-    tokenss[count].type = TOKEN_ID;
+    keyword_id_t *keywordness = linear_keyword_search(keywords, num_keywords, identf);
+    if (keywordness != NULL)
+    {
+        tokenss[count].type = keywordness->value;
+    }
+    else
+    {
+        tokenss[count].type = TOKEN_ID;
+    }
     tokenss[count].value = identf;
     tokenss[count].line = line;
     tokenss[count].column = column - 1;
@@ -149,6 +173,10 @@ tokenlist_t lex()
         {
             lex_onechar(TOKEN_RCBRCKT);
         }
+        else if (buffer[pos] == ',')
+        {
+            lex_onechar(TOKEN_COMMA);
+        }
         else if (isalpha(buffer[pos]) || buffer[pos] == '_')
         {
             lex_id();
@@ -206,6 +234,14 @@ char *tokentype_to_string(tokentype_t type)
         return "RCBRCKT";
     case TOKEN_ID:
         return "ID";
+    case TOKEN_FUNC:
+        return "FUNC";
+    case TOKEN_TYPE:
+        return "TYPE";
+    case TOKEN_RETURN:
+        return "RETURN";
+    case TOKEN_COMMA:
+        return "COMMA";
     default:
         return "UNKNOWN";
     }
