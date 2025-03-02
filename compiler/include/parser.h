@@ -1,5 +1,6 @@
 #pragma once
 #include <lexer.h>
+#include <stdbool.h>
 
 typedef enum ast_node_type
 {
@@ -60,6 +61,7 @@ typedef struct empty_ast
 
 typedef struct ast_node
 {
+    bool syntax_semicolon_pass;
     ast_node_type_t type;
     union
     {

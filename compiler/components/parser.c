@@ -144,6 +144,7 @@ ast_node_t *compound_statement()
     node->compound.children = statements->statements;
     node->compound.count = statements->count;
     eat(TOKEN_RCBRCKT);
+    node->syntax_semicolon_pass = true;
     return node;
 }
 
@@ -188,9 +189,9 @@ ast_list_t *statement_list()
     int stcnt = 1;
     ast_node_t **statements = malloc(sizeof(ast_node_t) * stcnt);
     statements[0] = statement();
-    while (current_token.type == TOKEN_SEMI)
+    while (current_token.type == TOKEN_SEMI || statements[stcnt-1]->syntax_semicolon_pass)
     {
-        eat(TOKEN_SEMI);
+        if (!statements[stcnt-1]->syntax_semicolon_pass) eat(TOKEN_SEMI);
         statements = realloc(statements, sizeof(ast_node_t) * stcnt + 1);
         statements[stcnt] = statement();
         stcnt++;

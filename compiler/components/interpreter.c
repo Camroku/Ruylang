@@ -122,7 +122,7 @@ void interpret(ast_node_t *node)
     vars_t *variables = malloc(sizeof(vars_t));
     init_vars(variables);
     int_compound(variables, node, false);
-    printf("cnt %d\n", variables->count);
+    printf("cnt %d\nprinting the main scope...\n", variables->count);
     for (int i = 0; i < variables->count; i++)
     {
         switch (variables->vars[i]->type)
