@@ -12,9 +12,19 @@ int visit_node(vars_t *variables, ast_node_t *node);
 int int_binop(vars_t *variables, ast_node_t *node)
 {
     int left = 0, right = 0;
-    left = visit_node(variables, node->binop.left);
-    right = visit_node(variables, node->binop.right);
-    switch (node->binop.op)
+    char op = 0;
+    if (node->type == AST_NODE_BINOP)
+    {
+        left = visit_node(variables, node->binop.left);
+        right = visit_node(variables, node->binop.right);
+        op = node->binop.op;
+    }
+    else if (node->type == AST_NODE_UNARYOP)
+    {
+        right = visit_node(variables, node->unaryop.right);
+        op = node->unaryop.op;
+    }
+    switch (op)
     {
     case '+':
         return left + right;
@@ -55,17 +65,16 @@ void int_compound(vars_t *variables, ast_node_t *node, bool create_new_scope)
 
 void int_assign(vars_t *variables, ast_node_t *node)
 {
-    varval_t *variable = malloc(sizeof(varval_t));
-    variable->type = VAR_INTEGER;
-    variable->var = node->assign.name;
-    variable->integer.value = visit_node(variables, node->assign.value);
     varval_t *existingvar = get_var(variables, node->assign.name);
     if (existingvar == NULL)
     {
         printf("Undefined reference to '%s'.\n", node->assign.name);
         exit(1);
     }
-    printf("just set %s = %d\n", variable->var, variable->integer.value);
+    existingvar->type = VAR_INTEGER;
+    existingvar->var = node->assign.name;
+    existingvar->integer.value = visit_node(variables, node->assign.value);
+    printf("just set %s = %d\n", existingvar->var, existingvar->integer.value);
 }
 
 void int_declare(vars_t *variables, ast_node_t *node)
@@ -114,16 +123,7 @@ int visit_node(vars_t *variables, ast_node_t *node)
         return int_binop(variables, node);
         break;
     case AST_NODE_UNARYOP:
-        right = visit_node(variables, node->unaryop.right);
-        switch (node->unaryop.op)
-        {
-        case '+':
-            return +right;
-            break;
-        case '-':
-            return -right;
-            break;
-        }
+        return int_binop(variables, node);
         break;
     case AST_NODE_COMPOUND:
         int_compound(variables, node, true);

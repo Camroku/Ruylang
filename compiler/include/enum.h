@@ -41,4 +41,3 @@ typedef enum vartypes {
     VAR_FUNCTION,
     VAR_UNKNOWN,
 } vartype_t;
-
